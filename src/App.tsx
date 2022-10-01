@@ -99,10 +99,8 @@ const App = () => {
           content={
             <React.Fragment>
               <p>
-                You have added {quantity} item(s) of {name}!
-              </p>
-              <p>
-                Total price is:{" "}
+                You have added {quantity} item(s) of {name}!<br /> Total price
+                is:{" "}
                 <strong>
                   {(Number(quantity) * Number(price)).toFixed(2)}$
                 </strong>

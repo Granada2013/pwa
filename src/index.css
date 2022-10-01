@@ -102,8 +102,8 @@ input:focus {
 
 .closeBtn {
   position: absolute;
-  top: 7%;
-  right: 7%;
+  top: 10px;
+  right: 20px;
 }
 
 .total {
@@ -112,33 +112,38 @@ input:focus {
   font-size: 1.5rem;
 }
 
-.mask {
+.modalWrapper {
   position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  bottom: 50px;
+  right: 50px;
+  font-size: 0.8rem;
+  background-color: #ededed;
+  color: #1b1a1b;
+  padding: 10px 40px;
+  border-radius: 8px;
+  width: 300px;
+  height: 80px;
+  animation: appear 1s ease-in-out;
 }
 
-.modalWrapper {
-  position: relative;
-  z-index: 2;
-  background-color: #ffffff;
-  color:#1b1a1b;
-  border-radius: 8px;
-  width: 40%;
-  min-width: 315px;
-  height: 250px;
-  padding: 5%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-size: 1.1rem;
+@keyframes appear {
+  from {
+    right: -300px;
+  }
+
+  to {
+    right: 50px;
+  }
+}
+
+@keyframes appear-mobile {
+  from {
+    top: -80px;
+  }
+
+  to {
+    top: 5%;
+  }
 }
 
 @media screen and (max-width: 900px) {
@@ -153,5 +158,15 @@ input:focus {
   }
   .addItemBtn {
     min-width:auto;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .modalWrapper {
+    top: 5%;
+    right: 5%;
+    left: 5%;
+    width: auto;
+    animation: appear-mobile 1s ease-in-out;
   }
 }
