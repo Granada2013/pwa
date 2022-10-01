@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { number } from "yargs";
 import ModalWindow from "./components/modal";
 
 const App = () => {

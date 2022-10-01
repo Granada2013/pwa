@@ -124,6 +124,7 @@ input:focus {
   width: 300px;
   height: 80px;
   animation: appear 1s ease-in-out;
+  box-shadow: -5px -5px 10px #1b1a1be7;
 }
 
 @keyframes appear {
@@ -133,16 +134,6 @@ input:focus {
 
   to {
     right: 50px;
-  }
-}
-
-@keyframes appear-mobile {
-  from {
-    top: -80px;
-  }
-
-  to {
-    top: 5%;
   }
 }
 
@@ -167,6 +158,15 @@ input:focus {
     right: 5%;
     left: 5%;
     width: auto;
-    animation: appear-mobile 1s ease-in-out;
+  }
+
+  @keyframes appear {
+    from {
+      top: -80px;
+    }
+  
+    to {
+      top: 5%;
+    }
   }
 }

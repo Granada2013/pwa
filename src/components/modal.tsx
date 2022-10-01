@@ -10,13 +10,13 @@ const ModalWindow = (props: Props) => {
     setTimeout(() => {
       document.addEventListener("click", props.closeModal, { once: true });
     }, 300);
-  }, []);
+  }, [props]);
 
   return (
     <div className="modalWrapper">
-      <div className="closeBtn" onClick={() => props.closeModal()}>
+      <strong className="closeBtn" onClick={() => props.closeModal()}>
         X
-      </div>
+      </strong>
       <React.Fragment>{props.content}</React.Fragment>
     </div>
   );
