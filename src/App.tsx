@@ -1,9 +1,12 @@
 import React, { useState } from "react";
+import { number } from "yargs";
+import ModalWindow from "./components/modal";
 
 const App = () => {
   const [name, setName] = useState<string>("");
   const [quantity, setQuantity] = useState<string>("");
   const [price, setPrice] = useState<string>("");
+  const [modal, setModal] = useState<boolean>(false);
 
   const insertQuantity = (value: string) => {
     if (/^\d+$/.test(value) || !value.length) {
@@ -17,13 +20,12 @@ const App = () => {
   };
 
   const addItem = () => {
+    setModal(true);
     console.log(
       `add ${quantity} units of ${name}, total price: ${
         Number(quantity) * Number(price)
       }`
     );
-
-    refresh();
   };
 
   const refresh = () => {
@@ -34,6 +36,11 @@ const App = () => {
 
   const deleteAll = () => {
     console.log("deleting all");
+  };
+
+  const closeModal = () => {
+    setModal(false);
+    refresh();
   };
 
   return (
@@ -86,6 +93,24 @@ const App = () => {
         </button>
         <div className="total">Total sum: {}$</div>
       </main>
+      {modal ? (
+        <ModalWindow
+          closeModal={closeModal}
+          content={
+            <React.Fragment>
+              <p>
+                You have added {quantity} item(s) of {name}!
+              </p>
+              <p>
+                Total price is:{" "}
+                <strong>
+                  {(Number(quantity) * Number(price)).toFixed(2)}$
+                </strong>
+              </p>
+            </React.Fragment>
+          }
+        />
+      ) : null}
     </div>
   );
 };
