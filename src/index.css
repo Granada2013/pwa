@@ -15,6 +15,10 @@ body {
   overflow: auto;
 }
 
+p {
+  margin: 0;
+}
+
 .container {
   height: 100%;
 }
@@ -31,7 +35,7 @@ main {
   grid-template-columns: 2fr 1fr 1fr 1fr;
   grid-gap: 15px;
   place-content: start;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 }
 
 input {
@@ -69,8 +73,9 @@ input:focus {
   background-color: #edededdb;
 }
 
-.addItemBtn .plus {
+.roundBtn {
   font-weight: 600;
+  border: none;
   border-radius: 50%;
   height: 32px;
   width: 32px;
@@ -80,19 +85,25 @@ input:focus {
   background-color: #1b1a1b;
   color: #ededed;
   margin-right: 10px;
+  cursor: pointer;
 }
 
-.addItemBtn:disabled .plus {
+.addItemBtn:disabled .roundBtn {
   background-color: #1b1a1bbd;
 }
 
+.listItem .roundBtn {
+  background-color: #ffff;
+  color: #1b1a1b;
+}
+
 .refresh {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   padding: 0;
   background-color: transparent;
   border: none;
   color: #ededed;
-  font-size: 1rem;
+  font-size: .8rem;
 }
 
 .refresh:hover, .closeBtn:hover {
@@ -114,6 +125,8 @@ input:focus {
 
 .modalWrapper {
   position: fixed;
+  display: flex;
+  align-items: center;
   bottom: 50px;
   right: 50px;
   font-size: 0.8rem;
@@ -125,6 +138,26 @@ input:focus {
   min-height: 80px;
   animation: appear 1s ease-in-out;
   box-shadow: -5px -5px 10px #1b1a1be7;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: 2fr;
+  margin-top: 20px;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+
+  width: 20rem;
+  border: 3px solid #ffff;
+  margin-bottom: 10px;
+  padding: 10px 20px;
+}
+
+.listItem:last-of-type {
+  margin-bottom: 0;
 }
 
 @keyframes appear {

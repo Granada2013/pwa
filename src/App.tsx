@@ -6,7 +6,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 
 const App = () => {
   const [name, setName] = useState<string>("");
-  const [quantity, setQuantity] = useState<string>("");
+  const [quantity, setQuantity] = useState<number | "">("");
   const [price, setPrice] = useState<string>("");
   const [modal, setModal] = useState<boolean>(false);
   const [status, setStatus] = useState<"default" | "success" | "fail">(
@@ -14,13 +14,16 @@ const App = () => {
   );
   const [total, setTotal] = useState<number>(0);
 
-  const shoppingList = useLiveQuery(() => db.shoppingList.toArray());
+  const shoppingList = useLiveQuery(async () => {
+    const list = await db.shoppingList.toArray();
+    return list;
+  });
 
   useEffect(() => {
     if (shoppingList?.length) {
       let sum = shoppingList?.reduce(
         (previous, current) =>
-          previous + Number(current.quantity) * Number(current.price),
+          previous + Number(current.quantity) * Number(current.numberPrice),
         0
       );
       setTotal(sum);
@@ -32,9 +35,9 @@ const App = () => {
   }, [modal]);
 
   const insertQuantity = (value: string) => {
-    if (/^\d+$/.test(value) || !value.length) {
-      if (!/^[0]/.test(value)) setQuantity(value);
-    }
+    if (!value.length) setQuantity("");
+    else if (/^\d+$/.test(value) && !/^[0]/.test(value))
+      setQuantity(Number(value));
   };
 
   const insertPrice = (value: string) => {
@@ -43,11 +46,12 @@ const App = () => {
   };
 
   const addItem = async () => {
+    let numberPrice = Number(price);
     try {
       const id = await db.shoppingList.add({
         name,
         quantity,
-        price,
+        numberPrice,
       });
 
       setStatus("success");
@@ -90,6 +94,7 @@ const App = () => {
             placeholder="Name of item"
             onChange={(e) => setName(e.target.value)}
             autoComplete="off"
+            maxLength={10}
           ></input>
           <input
             type="text"
@@ -112,7 +117,7 @@ const App = () => {
             onClick={addItem}
             disabled={!Boolean(name && quantity && price)}
           >
-            <span className="plus">+</span>Add item
+            <button className="roundBtn">+</button>Add item
           </button>
         </form>
         <button className="refresh" onClick={refresh}>
@@ -121,8 +126,8 @@ const App = () => {
         <button className="refresh" onClick={deleteAll}>
           Delete all
         </button>
-        <ShoppingList />
-        <div className="total">Total sum: {total}$</div>
+        {shoppingList?.length ? <ShoppingList list={shoppingList} /> : null}
+        <div className="total">Total sum: ${total.toFixed(2)}</div>
       </main>
       {modal ? (
         <ModalWindow
@@ -134,7 +139,7 @@ const App = () => {
                   You have added {quantity} item(s) of {name}!<br /> Total price
                   is:{" "}
                   <strong>
-                    {(Number(quantity) * Number(price)).toFixed(2)}$
+                    ${(Number(quantity) * Number(price)).toFixed(2)}
                   </strong>
                 </p>
               ) : (

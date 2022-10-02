@@ -1,14 +1,14 @@
 import Dexie, { Table } from "dexie";
 
-export interface ShoppingList {
+export interface ShoppingItem {
   id?: number;
   name: string;
-  quantity: string;
-  price: string;
+  quantity: number | "";
+  numberPrice: number;
 }
 
 export class MySubClassedDexie extends Dexie {
-  shoppingList!: Table<ShoppingList>;
+  shoppingList!: Table<ShoppingItem>;
 
   constructor() {
     super("myDatabase");

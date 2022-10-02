@@ -1,18 +1,32 @@
 import React from "react";
 import { useLiveQuery } from "dexie-react-hooks";
-import db from "../db";
+import db, { ShoppingItem } from "../db";
 
-const ShoppingList = () => {
-  const shoppingList = useLiveQuery(() => db.shoppingList.toArray());
+interface Props {
+  list: Array<ShoppingItem>;
+}
+
+const ShoppingList = (props: Props) => {
+  const deleteItem = async (id?: number) => {
+    if (id) {
+      await db.shoppingList.delete(id);
+    }
+  };
 
   return (
-    <React.Fragment>
-      {shoppingList?.map((item, i) => (
-        <div key={i}>
-          {item.name}, {item.quantity} x {item.price}$
+    <div className="list">
+      {props.list.map((item, i) => (
+        <div key={i} className="listItem">
+          <p style={{ width: "135px" }}>{item.name}</p>
+          <p style={{ flexGrow: "1" }}>
+            ${item.numberPrice} * {item.quantity}
+          </p>
+          <button className="roundBtn" onClick={() => deleteItem(item.id)}>
+            X
+          </button>
         </div>
       ))}
-    </React.Fragment>
+    </div>
   );
 };
 
