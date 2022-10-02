@@ -122,7 +122,7 @@ input:focus {
   padding: 10px 40px;
   border-radius: 8px;
   width: 300px;
-  height: 80px;
+  min-height: 80px;
   animation: appear 1s ease-in-out;
   box-shadow: -5px -5px 10px #1b1a1be7;
 }
@@ -157,6 +157,7 @@ input:focus {
     top: 5%;
     right: 5%;
     left: 5%;
+    bottom: auto;
     width: auto;
   }
 
