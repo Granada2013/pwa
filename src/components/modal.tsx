@@ -8,8 +8,19 @@ interface Props {
 const ModalWindow = (props: Props) => {
   useEffect(() => {
     setTimeout(() => {
-      document.addEventListener("click", props.closeModal, { once: true });
+      document.addEventListener(
+        "click",
+        () => {
+          clearTimeout(timer);
+          props.closeModal();
+        },
+        { once: true }
+      );
     }, 300);
+
+    const timer = setTimeout(() => {
+      props.closeModal();
+    }, 5000);
   }, [props]);
 
   return (

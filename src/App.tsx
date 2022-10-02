@@ -1,11 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ModalWindow from "./components/modal";
+import db from "./db";
+import ShoppingList from "./components/list";
+import { useLiveQuery } from "dexie-react-hooks";
 
 const App = () => {
   const [name, setName] = useState<string>("");
   const [quantity, setQuantity] = useState<string>("");
   const [price, setPrice] = useState<string>("");
   const [modal, setModal] = useState<boolean>(false);
+  const [status, setStatus] = useState<"default" | "success" | "fail">(
+    "default"
+  );
+  const [total, setTotal] = useState<number>(0);
+
+  const shoppingList = useLiveQuery(() => db.shoppingList.toArray());
+
+  useEffect(() => {
+    if (shoppingList?.length) {
+      let sum = shoppingList?.reduce(
+        (previous, current) =>
+          previous + Number(current.quantity) * Number(current.price),
+        0
+      );
+      setTotal(sum);
+    } else setTotal(0);
+  }, [shoppingList]);
+
+  useEffect(() => {
+    if (!modal) refresh();
+  }, [modal]);
 
   const insertQuantity = (value: string) => {
     if (/^\d+$/.test(value) || !value.length) {
@@ -18,13 +42,19 @@ const App = () => {
       setPrice(value);
   };
 
-  const addItem = () => {
+  const addItem = async () => {
+    try {
+      const id = await db.shoppingList.add({
+        name,
+        quantity,
+        price,
+      });
+
+      setStatus("success");
+    } catch (error) {
+      setStatus("fail");
+    }
     setModal(true);
-    console.log(
-      `add ${quantity} units of ${name}, total price: ${
-        Number(quantity) * Number(price)
-      }`
-    );
   };
 
   const refresh = () => {
@@ -33,13 +63,13 @@ const App = () => {
     setPrice("");
   };
 
-  const deleteAll = () => {
-    console.log("deleting all");
+  const deleteAll = async () => {
+    db.shoppingList.clear();
   };
 
   const closeModal = () => {
+    setStatus("default");
     setModal(false);
-    refresh();
   };
 
   return (
@@ -59,6 +89,7 @@ const App = () => {
             value={name}
             placeholder="Name of item"
             onChange={(e) => setName(e.target.value)}
+            autoComplete="off"
           ></input>
           <input
             type="text"
@@ -90,20 +121,28 @@ const App = () => {
         <button className="refresh" onClick={deleteAll}>
           Delete all
         </button>
-        <div className="total">Total sum: {}$</div>
+        <ShoppingList />
+        <div className="total">Total sum: {total}$</div>
       </main>
       {modal ? (
         <ModalWindow
           closeModal={closeModal}
           content={
             <React.Fragment>
-              <p>
-                You have added {quantity} item(s) of {name}!<br /> Total price
-                is:{" "}
-                <strong>
-                  {(Number(quantity) * Number(price)).toFixed(2)}$
-                </strong>
-              </p>
+              {status === "success" ? (
+                <p>
+                  You have added {quantity} item(s) of {name}!<br /> Total price
+                  is:{" "}
+                  <strong>
+                    {(Number(quantity) * Number(price)).toFixed(2)}$
+                  </strong>
+                </p>
+              ) : (
+                <p>
+                  Sorry, something went wrong! We couldn't add item to shopping
+                  list.
+                </p>
+              )}
             </React.Fragment>
           }
         />
