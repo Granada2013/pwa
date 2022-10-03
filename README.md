@@ -1,4 +1,4 @@
-# Shopping App with React, Typescript, Workbox and IndexDB
+# Shopping App with React, Typescript, Workbox and Indexed DB
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
