@@ -3,8 +3,9 @@ import Dexie, { Table } from "dexie";
 export interface ShoppingItem {
   id?: number;
   name: string;
-  quantity: number | "";
-  numberPrice: number;
+  category: string;
+  numQuantity: number;
+  numPrice: number;
 }
 
 export class MySubClassedDexie extends Dexie {
@@ -12,8 +13,8 @@ export class MySubClassedDexie extends Dexie {
 
   constructor() {
     super("myDatabase");
-    this.version(1).stores({
-      shoppingList: "++id, name, quantity, price",
+    this.version(2).stores({
+      shoppingList: "++id, name, category, quantity, price",
     });
   }
 }

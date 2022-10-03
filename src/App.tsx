@@ -1,43 +1,36 @@
 import React, { useState, useEffect } from "react";
 import ModalWindow from "./components/modal";
 import db from "./db";
-import ShoppingList from "./components/list";
+import ShoppingList from "./list";
+import Select from "./components/select";
+import Tabs from "./components/tabs";
 import { useLiveQuery } from "dexie-react-hooks";
 
 const App = () => {
   const [name, setName] = useState<string>("");
-  const [quantity, setQuantity] = useState<number | "">("");
+  const [quantity, setQuantity] = useState<string>("");
   const [price, setPrice] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
   const [modal, setModal] = useState<boolean>(false);
   const [status, setStatus] = useState<"default" | "success" | "fail">(
     "default"
   );
-  const [total, setTotal] = useState<number>(0);
+  const [btnDisable, setBtnDisable] = useState<boolean>(true);
+  const [filter, setFilter] = useState<string>("All");
 
-  const shoppingList = useLiveQuery(async () => {
-    const list = await db.shoppingList.toArray();
-    return list;
-  });
-
-  useEffect(() => {
-    if (shoppingList?.length) {
-      let sum = shoppingList?.reduce(
-        (previous, current) =>
-          previous + Number(current.quantity) * Number(current.numberPrice),
-        0
-      );
-      setTotal(sum);
-    } else setTotal(0);
-  }, [shoppingList]);
+  const CATEGORIES = ["Greenery", "Dairy", "Meat", "Other"];
 
   useEffect(() => {
     if (!modal) refresh();
   }, [modal]);
 
+  useEffect(() => {
+    setBtnDisable(!(name && category && price && quantity));
+  }, [name, category, price, quantity]);
+
   const insertQuantity = (value: string) => {
     if (!value.length) setQuantity("");
-    else if (/^\d+$/.test(value) && !/^[0]/.test(value))
-      setQuantity(Number(value));
+    else if (/^\d+$/.test(value) && !/^[0]/.test(value)) setQuantity(value);
   };
 
   const insertPrice = (value: string) => {
@@ -46,12 +39,14 @@ const App = () => {
   };
 
   const addItem = async () => {
-    let numberPrice = Number(price);
+    let numPrice = Number(price);
+    let numQuantity = Number(quantity);
     try {
       const id = await db.shoppingList.add({
         name,
-        quantity,
-        numberPrice,
+        category,
+        numQuantity,
+        numPrice,
       });
 
       setStatus("success");
@@ -65,6 +60,7 @@ const App = () => {
     setName("");
     setQuantity("");
     setPrice("");
+    setCategory("");
   };
 
   const deleteAll = async () => {
@@ -96,6 +92,12 @@ const App = () => {
             autoComplete="off"
             maxLength={10}
           ></input>
+          <Select
+            itemsList={CATEGORIES}
+            onChange={(item) => setCategory(item)}
+            placeholder={"Select category"}
+            value={category}
+          />
           <input
             type="text"
             name="quantity"
@@ -115,19 +117,25 @@ const App = () => {
           <button
             className="addItemBtn"
             onClick={addItem}
-            disabled={!Boolean(name && quantity && price)}
+            disabled={btnDisable}
           >
             <button className="roundBtn">+</button>Add item
           </button>
         </form>
-        <button className="refresh" onClick={refresh}>
-          Refresh
-        </button>
-        <button className="refresh" onClick={deleteAll}>
-          Delete all
-        </button>
-        {shoppingList?.length ? <ShoppingList list={shoppingList} /> : null}
-        <div className="total">Total sum: ${total.toFixed(2)}</div>
+        <div className="buttons">
+          <button className="refresh" onClick={refresh}>
+            Refresh
+          </button>
+          <button className="refresh" onClick={deleteAll}>
+            Delete all
+          </button>
+        </div>
+        <Tabs
+          options={["All", ...CATEGORIES]}
+          defaultOption="All"
+          onChange={setFilter}
+        />
+        <ShoppingList filter={filter} />
       </main>
       {modal ? (
         <ModalWindow

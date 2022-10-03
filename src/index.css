@@ -19,6 +19,10 @@ p {
   margin: 0;
 }
 
+li {
+  list-style: none;
+}
+
 .container {
   height: 100%;
 }
@@ -32,13 +36,13 @@ main {
 
 .form {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 2fr 2fr 2fr 1fr;
   grid-gap: 15px;
   place-content: start;
   margin-bottom: 20px;
 }
 
-input {
+input, .select {
   height: 3.5rem;
   text-align: center;
   border: none;
@@ -46,12 +50,55 @@ input {
   outline: none;
   border-radius: 5px;
   background-color: #3E3E41;
-  color: #ffffff !important;
+  color: #ffffff;
 }
 
 input:focus {
   border: 1px solid #ffffff;
 }
+
+.select {
+  position: relative;
+  padding: 16px 30px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  left: 0;
+  top: calc(100% + 2px);
+  background-color: #ffffff;
+  color: #1b1a1b;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px ;
+  max-height: 320px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.dropdown::-webkit-scrollbar {
+  width: 7px;
+  background-color: #f0f0f0;
+}
+
+.dropdown::-webkit-scrollbar-thumb {
+  background-color:#cdcdcd;
+}
+
+.dropdown li {
+  text-align: left;
+  padding: 16px 30px;
+}
+
+.dropdown li:hover {
+  background-color: rgba(0, 0, 0, .1);
+}
+
+
 
 .addItemBtn {
   display: flex;
@@ -90,6 +137,7 @@ input:focus {
 
 .addItemBtn:disabled .roundBtn {
   background-color: #1b1a1bbd;
+  cursor: default;
 }
 
 .listItem .roundBtn {
@@ -97,8 +145,15 @@ input:focus {
   color: #1b1a1b;
 }
 
+.buttons {
+  margin-bottom: 60px;
+}
+
+.buttons .refresh:first-child {
+  margin-right: 40px;
+}
+
 .refresh {
-  margin-bottom: 5px;
   padding: 0;
   background-color: transparent;
   border: none;
@@ -160,6 +215,26 @@ input:focus {
   margin-bottom: 0;
 }
 
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tabs li {
+  margin-right: 15px;
+  cursor: pointer;
+  padding: 8px 15px;
+  background-color: #3E3E41;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.tabs li.active {
+  background-color: #ffffff;
+  color: #1b1a1b;
+}
+
 @keyframes appear {
   from {
     right: -300px;
@@ -177,8 +252,12 @@ input:focus {
     grid-gap: 15px;
     place-content: center;
   }
-  input {
+  input, .select {
     width: 20rem;
+  }
+
+  .dropdown {
+    max-height: 220px;
   }
   .addItemBtn {
     min-width:auto;
