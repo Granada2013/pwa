@@ -4,7 +4,6 @@ import db from "./db";
 import ShoppingList from "./list";
 import Select from "./components/select";
 import Tabs from "./components/tabs";
-import { useLiveQuery } from "dexie-react-hooks";
 
 const App = () => {
   const [name, setName] = useState<string>("");
@@ -119,7 +118,7 @@ const App = () => {
             onClick={addItem}
             disabled={btnDisable}
           >
-            <button className="roundBtn">+</button>Add item
+            <div className="roundBtn">+</div>Add item
           </button>
         </form>
         <div className="buttons">
