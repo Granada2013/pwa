@@ -21,6 +21,7 @@ const App = () => {
 
   useEffect(() => {
     if (!modal) refresh();
+    else setBtnDisable(true);
   }, [modal]);
 
   useEffect(() => {
