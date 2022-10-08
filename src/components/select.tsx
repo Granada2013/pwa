@@ -9,7 +9,7 @@ interface Props {
 const Select = (props: Props) => {
   const [dropdown, setDropdown] = useState<boolean>(false);
 
-  const currIndex = useRef(0);
+  const currIndex: any = useRef();
 
   const handleDropdown = (e: any) => {
     if (!dropdown) {
@@ -32,39 +32,35 @@ const Select = (props: Props) => {
 
   useEffect(() => {
     if (!dropdown) {
-      currIndex.current = 0;
+      currIndex.current = undefined;
       return;
     }
     const list = document.querySelector(".dropdown");
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      console.log(e.key);
       const options = Array.from((list as Element).children);
       if (e.key === "Escape") {
         setDropdown(false);
       } else if (e.key === "ArrowDown") {
         options.forEach((li) => li.classList.remove("dropdown_hover"));
-        options[currIndex.current].classList.add("dropdown_hover");
-        if (currIndex.current === props.itemsList.length - 1)
+        if (
+          currIndex.current === undefined ||
+          currIndex.current === props.itemsList.length - 1
+        )
           currIndex.current = 0;
-        else {
-          console.log("adding 1 to", currIndex);
-          currIndex.current += 1;
-        }
+        else currIndex.current += 1;
+        options[currIndex.current].classList.add("dropdown_hover");
       } else if (e.key === "ArrowUp") {
         options.forEach((li) => li.classList.remove("dropdown_hover"));
-        options[currIndex.current].classList.add("dropdown_hover");
-        if (currIndex.current === 0)
+        if (currIndex.current === undefined)
+          currIndex.current = props.itemsList.length - 1;
+        else if (currIndex.current === 0)
           currIndex.current = props.itemsList.length - 1;
         else currIndex.current -= 1;
+        options[currIndex.current].classList.add("dropdown_hover");
       } else if (e.key === "Enter") {
-        handleSelect(
-          props.itemsList[
-            currIndex.current === 0
-              ? props.itemsList.length - 1
-              : currIndex.current - 1
-          ]
-        );
+        if (currIndex.current !== undefined)
+          handleSelect(props.itemsList[currIndex.current]);
       }
     };
 
